@@ -45,8 +45,8 @@ SELECT * FROM EMPLOYEES WHERE JOB_ID NOT LIKE '%IT%'; -- IT가 들어가지 않�
 
 --------------------------------------------------------------------------------
 -- ORDER BY 구문
-SELECT * FROM EMPLOYEES ORDER BY SALARY; -- ABC가 오름차순
-SELECT * FROM EMPLOYEES ORDER BY SALARY DESC; -- ABC가 내림차순
+SELECT * FROM EMPLOYEES ORDER BY SALARY; -- ASC가 오름차순( 디폴트 값이라 생략가능 )
+SELECT * FROM EMPLOYEES ORDER BY SALARY DESC; -- DESC가 내림차순
 SELECT * FROM EMPLOYEES ORDER BY DEPARTMENT_ID, SALARY DESC; -- 먼저 부서아디디로 정렬, 동순위에 대해서 SALARY로 내림차순 정렬 , 사용하여 여러가지 사용가능
 
 SELECT FIRST_NAME, SALARY * 12 AS 연봉 FROM EMPLOYEES ORDER BY 연봉 DESC; -- 엘리어스를 정렬에서 사용할 수 있음

@@ -56,3 +56,53 @@ VALUES(2, NULL, '010...', 'F', 1700); -- UNIQUE 제약 위배 '010...'이 이미
 -- 개체 무결성 : 기본키에 NOT NULL일 수 없고, 중복 될 수 없다는 규칙
 -- 참조 무결성 : 참조하는 테이블의 PK만 FK컬럼에 들어갈 수 있다는 규칙
 -- 도메인 무결성 : CHECK, UNIQUE제약 안에서만 데이터가 들어갈 수 있다는 규칙 (CHECK, UNIQUE제약을 위배 할 수 없다)
+
+--------------------------------------------------------------------------------
+
+--2DN - 테이블 레벨 제약조건
+-- 뒤에 () 컬럼명을 써준다는 차이가 있다 , 슈퍼키를 만들 수 있다
+DROP TABLE DEPTS;
+
+CREATE TABLE DEPTS (
+    DEPT_NO NUMBER(2),
+    DEPT_NAME VARCHAR2(30) NOT NULL,
+    DEPT_DATE DATE         DEFAULT SYSDATE,
+    DEPT_PHONE VARCHAR2(30),
+    DEPT_GENDER CHAR(1),
+    LOCA_ID NUMBER(4),
+    CONSTRAINT DEPTS_DEPT_NO_PK PRIMARY KEY (DEPT_NO /*, DEPT_NAME*/), -- 슈퍼키(두개의 컬럼을 엮어줌) 지정은 테이블레벨로 가능함
+    CONSTRAINT DEPTS_PHONE_UK UNIQUE (DEPT_PHONE),
+    CONSTRAINT DEPTS_GENDER_CK CHECK (DEPT_GENDER IN ('F', 'M') ),
+    CONSTRAINT DETPS_LOCA_ID_FK FOREIGN KEY (LOCA_ID) REFERENCES LOCATIONS (LOCATION_ID)
+);
+
+--------------------------------------------------------------------------------
+
+-- 3ND (제약조건의 추가 삭제), 수정은 없음
+DROP TABLE DEPTS;
+
+CREATE TABLE DEPTS (
+    DEPT_NO NUMBER(2),
+    DEPT_NAME VARCHAR2(30) ,
+    DEPT_DATE DATE         DEFAULT SYSDATE,
+    DEPT_PHONE VARCHAR2(30),
+    DEPT_GENDER CHAR(1),
+    LOCA_ID NUMBER(4)
+);
+ALTER TABLE DEPTS ADD CONSTRAINT DEPT_NO_PK PRIMARY KEY (DEPT_NO); -- PK 추가
+ALTER TABLE DEPTS MODIFY DEPT_NAME VARCHAR2(30) NOT NULL; -- NOT NULL은 MODIFY 구문으로 열 변경으로 추가함
+ALTER TABLE DEPTS ADD CONSTRAINT DEPT_PHONE_UK UNIQUE (DEPT_PHONE); -- UK 추가
+ALTER TABLE DEPTS ADD CONSTRAINT DEPT_GENDER_CK CHECK (DEPT_GENDER IN ('F', 'M')); -- CK 추가
+ALTER TABLE DEPTS ADD CONSTRAINT DEPT_LOCA_ID_FK FOREIGN KEY (LOCA_ID) REFERENCES LOCATIONS (LOCATION_ID);
+
+-- 2ND 와 3DN 의 차이점 
+-- 2ND는 테이블을 만들때 NOT NULL을 해줬고 3ND는 제약조건에 NOT NULL 을 사용할 때 MODIFY를 사용 
+
+-- 제약조건의 삭제
+ALTER TABLE DEPTS DROP PRIMARY KEY; -- 이렇게 지울 수 있음
+
+ALTER TABLE DEPTS DROP CONSTRAINT DEPT_LOCA_ID_FK; -- 이름으로도 지울 수 있음
+
+-- 테이블의 제약조건을 SQL 문으로 확인하기
+SELECT * FROM USER_CONSTRAINTS WHERE TABLE_NAME = 'DEPTS';
+

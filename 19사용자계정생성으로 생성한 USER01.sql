@@ -1,0 +1,3 @@
+CREATE TABLE EX(
+    NAME NUMBER(2)
+);
